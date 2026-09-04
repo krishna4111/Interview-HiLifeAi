@@ -17,6 +17,68 @@ Files containing an actual MongoDB query are marked at the top with:
 //NOTE: This is a mongo db query
 ```
 
+## Sample Data / Problem Statements
+
+**Q1 — Stock Race Condition**
+
+```javascript
+const data = [{ material: "Laptop", available: 10 }];
+// User A requests 7 and User B requests 6, simultaneously
+// 7 requested -> SUCCESS, 6 requested -> FAILED
+// available must never go negative
+```
+
+**Q2 — Nested Array Update**
+
+```javascript
+const arrData = [
+  {
+    _id: "stock1",
+    assettodo: [
+      {
+        material: "Laptop",
+        breakupdata: [
+          { materialcode: "LAP001", status: "Pending" },
+          { materialcode: "LAP002", status: "Pending" },
+        ],
+      },
+      {
+        material: "Monitor",
+        breakupdata: [{ materialcode: "MON001", status: "Pending" }],
+      },
+    ],
+  },
+];
+// Update only Laptop -> LAP002 -> status = "Transfer"
+// Without changing Laptop -> LAP001 or Monitor -> MON001
+```
+
+**Q3 — Latest Record Per Employee**
+
+```javascript
+[
+  { employee: "EMP001", date: "2026-09-01", status: "Present" },
+  { employee: "EMP001", date: "2026-09-02", status: "Absent" },
+  { employee: "EMP001", date: "2026-09-03", status: "Present" },
+  { employee: "EMP002", date: "2026-09-01", status: "Absent" },
+  { employee: "EMP002", date: "2026-09-03", status: "Present" },
+];
+// Return only the latest attendance record for each employee
+```
+
+**Q4 — Recursive Menu Problem**
+
+```javascript
+[
+  { name: "Employee", parent: null },
+  { name: "Employee List", parent: "Employee" },
+  { name: "Employee Create", parent: "Employee" },
+  { name: "Reports", parent: null },
+  { name: "Salary Report", parent: "Reports" },
+];
+// Convert to a nested { name, children: [...] } tree structure
+```
+
 ## How Each Was Tested
 
 **Q1 — Stock Race Condition:** Not easily testable as a single static query, since it requires two concurrent requests hitting the DB at the same time. The atomic `findOneAndUpdate()` logic and a `Promise.all()`-based simulation are included in `stockRaceCondition.js` for reference — running it needs a real MongoDB connection (local or Atlas), not a query playground.
@@ -51,4 +113,4 @@ node recursiveMenu.js
 
 ## Author
 
-KrishnaMoorthy k
+Krishnamoorthy K
